@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* Global styles */
+body {
+  margin-top: 60px;
+}
+
+@media (max-width: 768px) {
+  body {
+    margin-top: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    margin-top: 50px;
+  }
+}
+
