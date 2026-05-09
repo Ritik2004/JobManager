@@ -15,6 +15,11 @@ const jobschema = new mongoose.Schema({
         enum:['applied','interview','hold','selected'],
         default:'applied'
     },
+    job_url:{
+        type:String,
+        trim:true
+    },
+    
     notes:{
         type:String
     },

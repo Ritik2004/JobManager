@@ -1,15 +1,16 @@
 import React from 'react'
 import { useState } from 'react'
 
-const JobForm = () => {
+const JobForm = ({ job, editJob, showForm, setShowForm }) => {
+  console.log("edit job is", editJob);
   const [formData, setformData] = useState({
-    company: '',
-    role: '',
-    status: '',
-    notes: '',
-    job_url: '',
+      company: job?.company || '',
+  role: job?.role || '',
+  status: job?.status || '',
+  notes: job?.notes || '',
+  job_url: job?.job_url || '',
   })
-
+ 
   const handleChange = (e) => {
     setformData({
       ...formData,
@@ -21,8 +22,9 @@ const JobForm = () => {
     e.preventDefault()
 
     try {
-      const res = await fetch('http://localhost:3000/api/jobs/addJob', {
-        method: 'POST',
+      const res = await fetch(
+        editJob ? `http://localhost:3000/api/jobs/updateJob/${job._id}` : 'http://localhost:3000/api/jobs/addJob', {
+        method: editJob ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -32,7 +34,7 @@ const JobForm = () => {
       if (!res.ok) {
         throw new Error(data.msg || 'Failed to add job')
       }
-      alert("Job Added Successfully")
+      alert(editJob ? "Job Updated Successfully" : "Job Added Successfully")
       setformData({
         role: '',
         company: '',
@@ -40,6 +42,7 @@ const JobForm = () => {
         notes: '',
         job_url: '',
       })
+    { editJob && setShowForm(false);}
     } catch (err) {
       console.log(err)
       alert(err.message || 'Error adding job')
@@ -136,8 +139,10 @@ const JobForm = () => {
         type="submit"
         className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition"
         >
-        Add Job
+       {editJob ? 'Save Changes' : 'Add Job'}
         </button>
+
+        
     </form>
   )
 }

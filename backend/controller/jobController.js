@@ -27,6 +27,7 @@ export const createJobs = async (req, res) => {
       company: body.company,
       role: body.role,
       status: body.status,
+      job_url: body.job_url,
       notes: body.notes,
     });
 
@@ -42,3 +43,56 @@ export const createJobs = async (req, res) => {
     });
   }
 };
+
+export const updateJob = async (req, res) => {
+  const {id} = req.params;
+  const body = req.body;
+  try{
+      const job = await Job.findById(id);
+      if(!job){
+        return res.status(404).json({
+          msg: "Job not found",
+        });
+      }
+      const updatedjob = await Job.findByIdAndUpdate(
+        id,
+        body,
+        {
+          new:true,
+          runValidators:true,
+        }
+      )
+      return res.status(200).json({
+        msg: "Job updated successfully",
+        data: updatedjob
+      });
+  }
+  catch(err){
+    console.log(err);
+    return res.status(500).json({
+      msg: "Failed in updating job post",
+    });
+  }
+}
+
+export const deleteJob = async (req, res) => {
+  const {id} = req.params;
+  try{
+    const job = await Job.findByIdAndDelete(id);
+    if(!job){
+      return res.status(404).json({
+        msg: "Job not found",
+      });
+    }
+    return res.status(200).json({
+      msg: "Job deleted successfully",
+    });
+ 
+  }
+  catch(err){
+    console.log(err);
+    return res.status(500).json({
+      msg: "Failed in deleting job post",
+    });
+  }
+}
