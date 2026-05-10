@@ -1,9 +1,11 @@
 import React from 'react'
 import JobForm from './JobForm'
 import { useState } from 'react'
+import JobScore from './JobScore'
 const JobCard = ({ job }) => {
    const[showForm, setShowForm] = useState(false);
    const [editJob, setEditJob] = useState(false);
+   const [showScore, setShowScore] = useState(false);
     const getStatusColor = (status) => {
     const colors = {
       applied: 'bg-blue-100 text-blue-800',
@@ -33,8 +35,22 @@ const JobCard = ({ job }) => {
       alert(e.message || 'Error deleting job');
     }
   }
+  const openAI = async (job) => {
+    setShowScore(true);
+  }
   return (
     <>
+    {showScore && 
+    
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        onClick={() => {
+         setShowScore(false)
+      }}>
+      <div className="w-full max-w-4xl h-full p-4" onClick={(e) => e.stopPropagation()}>
+        <JobScore job={job} setShowScore={setShowScore}/>
+      </div>
+    </div>}
+    
       {showForm && (
       <div 
         className="fixed inset-0 bg-white/80 flex items-center justify-center z-50"
@@ -58,11 +74,14 @@ const JobCard = ({ job }) => {
         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(job.status)}`}>
           {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
         </span>
+        <button className='bg-purple-400 text-white px-2 rounded-lg' onClick={(e) => {openAI(job);e.stopPropagation();}}>
+          AI
+        </button>
         <button className='text-red-500 hover:text-red-700' onClick={(e) => {removeCard(job._id); e.stopPropagation(); window.location.reload()}}>✖</button>
       </div>
 
       {job.notes && (
-        <p className="text-gray-700 text-sm mb-3 bg-gray-50 p-3 rounded">{job.notes}</p>
+        <p className="text-gray-700 text-sm bg-gray-50 rounded line-clamp-2 mb-2">{job.notes}</p>
       )}
 
       <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
