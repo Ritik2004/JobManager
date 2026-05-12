@@ -1,6 +1,6 @@
 import ai from '../config.js';
 
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'openai/gpt-oss-20b';
 
 const buildPrompt = ({ resumeText, jobDescription }) => {
   return `You are a resume screening assistant. Always return valid JSON only. No explanation, no markdown, just the JSON object.
@@ -36,13 +36,13 @@ const parseJson = (text) => {
 export async function scoreResumeFit(resumeText, jobDescription) {
   const prompt = buildPrompt({ resumeText, jobDescription });
 
-  const response = await ai.models.generateContent({
-    model: MODEL,
-    contents: prompt,
-    temperature: 0.2,
-  });
+ const response = await ai.responses.create({
+  model: "openai/gpt-oss-20b",
+  input: prompt,
+  temperature: 0.2,
+});
 
-  const text = response.text ?? response.outputText ?? '';
+ const text = response.output_text;
   const data = parseJson(text);
 
   if (
