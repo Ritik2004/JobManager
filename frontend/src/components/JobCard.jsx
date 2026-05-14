@@ -77,6 +77,9 @@ const JobCard = ({ job }) => {
         <button className='bg-purple-400 text-white px-2 rounded-lg' onClick={(e) => {openAI(job);e.stopPropagation();}}>
           AI
         </button>
+        <button>
+          
+        </button>
         <button className='text-red-500 hover:text-red-700' onClick={(e) => {removeCard(job._id); e.stopPropagation(); window.location.reload()}}>✖</button>
       </div>
 
