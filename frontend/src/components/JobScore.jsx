@@ -2,21 +2,28 @@ import React from 'react'
 import { useState } from 'react';
 import FitscoreCard from './FitscoreCard';
 import thinkgif from '../assets/think.gif';
+import Question from './Question';
 const JobScore = ({job, setShowScore}) => {
     const[resume, setResume] = useState('');
     const[showFitscore, setShowFitscore] = useState(false);
     const [scoredata, setscoreData] = useState(null);
     const [thinking, setThinking] = useState(false);
+    const[showprep, setShowPrep] = useState(false);
+    const[prepdata, setPrepData] = useState(null);
     const helpPrep = async(job)=>{
+        console.log("prepping for interview for job", job);
          try{
             const res = await fetch('http://localhost:3000/api/ai/prep-interview', {
                 method:'POST',
                 headers:{
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({jobDescription: job})
+                body: JSON.stringify({company: job.company, position: job.role, description: job.notes})
                 });
             const data = await res.json();
+            setPrepData(data);
+            setShowPrep(true);
+                console.log(data);
             if (!res.ok) {
                 throw new Error(data.message || 'Failed to get prep data from AI'); 
             }
@@ -59,7 +66,9 @@ const JobScore = ({job, setShowScore}) => {
   }
   return (
    <>
+
     {
+        showprep ? ( <Question setShowPrep={setShowPrep} data={prepdata}/> ):
          showFitscore ? <FitscoreCard setShowFitscore={setShowFitscore} data={scoredata} />
      : (
     <div className="h-full flex flex-col">

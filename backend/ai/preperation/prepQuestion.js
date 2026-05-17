@@ -35,6 +35,20 @@ Return ONLY valid JSON.
 `;
 }
 
+const parseJson = (text) => {
+    const raw = text?.trim();
+    if (!raw) throw new Error('Empty response from Gemini.');
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      const match = raw.match(/\{[\s\S]*\}/); 
+      if (match) {
+        return JSON.parse(match[0]);
+      } 
+      throw new Error(`Could not parse JSON from Gemini response: ${raw}`);
+    }
+  };
+
 export async function prepQuestion(company, position, description) {
     const prompt = builtPrompt({company, position, description});
     const response = await ai.responses.create({
@@ -43,5 +57,5 @@ export async function prepQuestion(company, position, description) {
         temperature: 0.7,
     });
     const text = response.output_text;
-    return JSON.parse(text);
+    return parseJson(text);
 }
